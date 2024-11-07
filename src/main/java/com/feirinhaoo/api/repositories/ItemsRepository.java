@@ -8,4 +8,5 @@ import com.feirinhaoo.api.models.ItemsModel;
 @Repository
 public interface ItemsRepository extends JpaRepository<ItemsModel, Long> {
     
+    boolean existsByName(String name);
 }

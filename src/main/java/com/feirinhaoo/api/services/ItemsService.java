@@ -32,13 +32,22 @@ public class ItemsService {
         }
     }
 
-    public ItemsModel createItems(ItemsDTO body) {
+    public Optional<ItemsModel> createItems(ItemsDTO body) {
+        if(itemsRepository.existsByName(body.getName())) {
+            return Optional.empty();
+        }
+        
         ItemsModel items = new ItemsModel(body);
+
         itemsRepository.save(items);
-        return items;
+        return Optional.of(items);
     }
 
     public Optional<ItemsModel> updateItems(Long id, ItemsDTO body) {
+        if(itemsRepository.existsByName(body.getName())) {
+            return null;
+        }
+        
         Optional<ItemsModel> items = itemsRepository.findById(id);
         
         if(!items.isPresent()) {
@@ -51,5 +60,15 @@ public class ItemsService {
         return Optional.of(newItems);
     }
 
+    public Optional<ItemsModel> deleteItems(Long id) {
+        Optional<ItemsModel> items = itemsRepository.findById(id);
+
+        if(!items.isPresent()) {
+            return Optional.empty();
+        }
+        
+        itemsRepository.deleteById(id);
+        return items;
+    }
 
 }

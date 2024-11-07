@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,13 +47,22 @@ public class ItemsController {
 
     @PostMapping()
     public ResponseEntity<Object> createContacts(@RequestBody @Valid ItemsDTO body) {
-        ItemsModel items = itemsService.createItems(body);
+        Optional<ItemsModel> items = itemsService.createItems(body);
+
+        if(!items.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este nome já existe.");
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(items);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateItems(@PathVariable Long id, @RequestBody @Valid ItemsDTO body) {
         Optional<ItemsModel> items = itemsService.updateItems(id, body);
+
+        if(items == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este nome já existe!");
+        }
         
         if(!items.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -62,5 +72,14 @@ public class ItemsController {
         
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteItems(@PathVariable Long id) {
+        Optional<ItemsModel> items = itemsService.deleteItems(id);
 
+        if(!items.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
