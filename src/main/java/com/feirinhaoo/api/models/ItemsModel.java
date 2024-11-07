@@ -1,5 +1,7 @@
 package com.feirinhaoo.api.models;
 
+import com.feirinhaoo.api.dtos.ItemsDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,4 +28,9 @@ public class ItemsModel {
 
     @Column(nullable = false)
     private int quantity;
+
+    public ItemsModel(ItemsDTO dto) {
+        this.name = dto.getName();
+        this.quantity = dto.getQuantity();
+    }
 }
