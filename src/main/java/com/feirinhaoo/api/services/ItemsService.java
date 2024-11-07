@@ -38,7 +38,18 @@ public class ItemsService {
         return items;
     }
 
-    
+    public Optional<ItemsModel> updateItems(Long id, ItemsDTO body) {
+        Optional<ItemsModel> items = itemsRepository.findById(id);
+        
+        if(!items.isPresent()) {
+            return Optional.empty();
+        }
+
+        ItemsModel newItems = new ItemsModel(body);
+        newItems.setId(id);
+        itemsRepository.save(newItems);
+        return Optional.of(newItems);
+    }
 
 
 }
